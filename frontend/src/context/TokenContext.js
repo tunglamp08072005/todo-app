@@ -1,3 +1,6 @@
 import { createContext } from "react";
-const TokenContext = createContext(null)
+
+// Tạo context để quản lý token xác thực và thông tin người dùng
+const TokenContext = createContext(null);
+
 export default TokenContext;
