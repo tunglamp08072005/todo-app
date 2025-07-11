@@ -1,8 +1,11 @@
-import express from "express"
-import { forgotPassword, resetPassword } from "../controllers/forgotPasswordController.js"
-
+const express = require("express");
 const router = express.Router();
-router.post("/forgotPassword", forgotPassword)
-router.post("/resetPassword", resetPassword)
+const { forgotPassword, resetPassword } = require("../controllers/forgotPasswordController");
 
-export default router;
+// Gửi email chứa token reset password
+router.post("/forgot", forgotPassword);
+
+// Đặt lại mật khẩu bằng token
+router.post("/reset", resetPassword);
+
+module.exports = router;
