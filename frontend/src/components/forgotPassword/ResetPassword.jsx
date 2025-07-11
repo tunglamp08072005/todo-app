@@ -1,74 +1,98 @@
-import React, { useState } from 'react';
-import { useSearchParams } from "react-router-dom";
-import axios from "../../Axios/axios.js";
+import React, { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "../../Axios/axios";
 
 function ResetPassword() {
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
-    const [searchParams] = useSearchParams();
-    const [isLoading, setIsLoading] = useState(false)
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get("token");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true)
-        setMessage("");
-        setError("");
-        if (password !== confirmPassword) {
-            setError("Passwords do not match");
-            setIsLoading(false)
-        } else {
-            try {
-                const token = searchParams.get("token");
-                const res = await axios.post("/forgotPassword/resetPassword", {token, password })
-                setMessage(res.data.message);
-            } catch (error) {
-                setError(error.response.data.message)
-            }finally{
-                setIsLoading(false)
-            }
-           
-        }
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!newPassword || !confirmPassword) {
+      setError("Vui lòng nhập đầy đủ mật khẩu.");
+      return;
     }
-    return (
-        <div className='text-center'>
-            <h1 className='text-xl font-bold p-5'>Reset Password</h1>
-            <form className="w-2/5 mx-auto p-5" onSubmit={handleSubmit}>
-                <input type="password"
-                    className="p-3 rounded-md shadow-lg w-full my-4"
-                    placeholder="Enter new password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    value={password}
-                    required
-                    autoComplete='false'
-                />
-                <input type="password"
-                    className="p-3 rounded-md shadow-lg w-full my-4"
-                    placeholder="Confirm new password"
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    value={confirmPassword}
-                    required
-                    autoComplete={false}
-                />
-                <button className="p-2 rounded-md shadow-md bg-indigo-700 text-white px-5 mt-10 disabled:bg-indigo-400" disabled={isLoading}>Reset</button>
-            </form>
-            {
-                message && <div className='mt-10 bg-green-700 mx-auto w-2/5 p-3 rounded-lg shadow-lg text-white text-lg'>
-                    <p>
-                        {message}
-                    </p>
-                </div>
-            }
-            {
-                error && <div className='mt-10 bg-red-700 mx-auto w-2/5 p-3 rounded-lg shadow-lg text-white text-lg'>
-                    <p>
-                        {error}
-                    </p>
-                </div>
-            }
-        </div>
-    );
+
+    if (newPassword !== confirmPassword) {
+      setError("Mật khẩu xác nhận không khớp.");
+      return;
+    }
+
+    try {
+      const res = await axios.post("/forgotPassword/reset", {
+        token,
+        newPassword,
+      });
+
+      setSuccess(res.data.message);
+      setError("");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2500);
+    } catch (err) {
+      console.error("Reset Password Error:", err);
+      setError(err.response?.data?.message || "Lỗi đặt lại mật khẩu.");
+      setSuccess("");
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-slate-100">
+      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-center mb-4">Đặt lại mật khẩu</h2>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4">
+            {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <label className="block mb-2 font-medium text-gray-700">
+            Mật khẩu mới:
+          </label>
+          <input
+            type="password"
+            className="w-full px-3 py-2 border border-gray-300 rounded mb-4 focus:outline-none focus:border-blue-500"
+            placeholder="Nhập mật khẩu mới"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+
+          <label className="block mb-2 font-medium text-gray-700">
+            Xác nhận mật khẩu:
+          </label>
+          <input
+            type="password"
+            className="w-full px-3 py-2 border border-gray-300 rounded mb-4 focus:outline-none focus:border-blue-500"
+            placeholder="Nhập lại mật khẩu"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-medium transition"
+          >
+            Xác nhận
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default ResetPassword;
