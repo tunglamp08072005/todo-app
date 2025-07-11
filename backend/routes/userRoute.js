@@ -1,10 +1,19 @@
-import express from 'express';
-import { loginUser, registerUser,getUser } from '../controllers/userController.js';
-import requireAuth from '../middleware/requireAuth.js';
+const express = require("express");
 const router = express.Router();
+const {
+  registerUser,
+  loginUser,
+  getUserInfo
+} = require("../controllers/userController");
+const requireAuth = require("../middleware/requireAuth");
 
-router.post("/login",loginUser);
-router.post("/register",registerUser);
-router.get("/getuser", requireAuth, getUser)
+// ✅ Đăng ký tài khoản mới
+router.post("/register", registerUser);
 
-export default router;
+// ✅ Đăng nhập người dùng
+router.post("/login", loginUser);
+
+// ✅ Lấy thông tin người dùng (cần đăng nhập)
+router.get("/getUser", requireAuth, getUserInfo);
+
+module.exports = router;
