@@ -14,8 +14,8 @@ function Active() {
       {activeTasks.length === 0 ? (
         <p className="text-gray-500">Không có công việc nào đang hoạt động.</p>
       ) : (
-        activeTasks.map((task, index) => (
-          <Task key={task._id} task={task} index={index} />
+        activeTasks.map((task) => (
+          <Task key={task._id} task={task} />
         ))
       )}
     </div>

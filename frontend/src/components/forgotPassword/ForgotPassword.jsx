@@ -15,7 +15,7 @@ function ForgotPassword() {
     }
 
     try {
-      const res = await axios.post("/forgotPassword/forgot", { email });
+      const res = await axios.post("/password/forgot", { email });
       setMessage(res.data.message);
       setError("");
       setEmail("");

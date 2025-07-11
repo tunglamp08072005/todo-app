@@ -37,7 +37,7 @@ function CreateTask() {
         },
       });
 
-      dispatch({ type: "ADD_TASK", title: res.data.title, description: res.data.description });
+      dispatch({ type: "ADD_TASK", payload: res.data });
       setFormData({ title: "", description: "" });
       setError("");
     } catch (err) {

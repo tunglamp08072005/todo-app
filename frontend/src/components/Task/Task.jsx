@@ -3,13 +3,13 @@ import TaskContext from "../../context/TaskContext";
 import axios from "../../Axios/axios";
 import "./Task.css";
 
-function Task({ task, index }) {
+function Task({ task }) {
   const { dispatch } = useContext(TaskContext);
 
   const handleToggle = async () => {
     try {
       await axios.patch(`/task/markDone/${task._id}`);
-      dispatch({ type: "MARK_DONE", id: index });
+      dispatch({ type: "MARK_DONE", id: task._id });
     } catch (error) {
       console.error("Toggle Task Error:", error);
     }
@@ -18,7 +18,7 @@ function Task({ task, index }) {
   const handleDelete = async () => {
     try {
       await axios.delete(`/task/delete/${task._id}`);
-      dispatch({ type: "REMOVE_TASK", id: index });
+      dispatch({ type: "REMOVE_TASK", id: task._id });
     } catch (error) {
       console.error("Delete Task Error:", error);
     }

@@ -9,16 +9,19 @@ const generateResetToken = (id) => {
   return jwt.sign({ id }, process.env.RESET_SECRET, { expiresIn: "15m" });
 };
 
-// ✅ Gửi email chứa link reset password
 const sendResetEmail = async (email, resetToken) => {
   const resetUrl = `${process.env.FRONTEND_URL}/resetPassword?token=${resetToken}`;
+  
+  console.log("🔧 Gửi email đến:", email);
+  console.log("🔗 Link đặt lại mật khẩu:", resetUrl);
+  console.log("📧 EMAIL_USER:", process.env.EMAIL_USER);
+  console.log("📧 EMAIL_PASSWORD:", process.env.EMAIL_PASSWORD ? "✔︎ tồn tại" : "✘ không tồn tại");
 
-  // Cấu hình transporter để gửi mail (dùng Gmail hoặc dịch vụ SMTP khác)
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: process.env.EMAIL_USER,         // địa chỉ email gửi
-      pass: process.env.EMAIL_PASSWORD      // mật khẩu ứng dụng
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD
     }
   });
 
@@ -33,13 +36,27 @@ const sendResetEmail = async (email, resetToken) => {
     `
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("✅ Gửi email thành công");
+  } catch (err) {
+    console.error("❌ Lỗi khi gửi email:", err); // ❗ log này sẽ hiển thị lỗi chi tiết
+    throw err; // ném lỗi lại để controller biết
+  }
 };
 
 // ✅ Gửi link reset mật khẩu
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
+
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASSWORD) {
+      return res.status(500).json({ message: "Thiếu cấu hình email trong biến môi trường" });
+    }
+
+    if (!process.env.RESET_SECRET || !process.env.FRONTEND_URL) {
+      return res.status(500).json({ message: "Thiếu cấu hình RESET_SECRET hoặc FRONTEND_URL" });
+    }
 
     // Kiểm tra email tồn tại
     const user = await User.findOne({ email });
@@ -55,7 +72,7 @@ exports.forgotPassword = async (req, res) => {
 
     res.status(200).json({ message: "Đã gửi email đặt lại mật khẩu" });
   } catch (error) {
-    console.error("Forgot Password Error:", error);
+    console.error("Forgot Password Error:", error.message);
     res.status(500).json({ message: "Đã có lỗi xảy ra. Vui lòng thử lại sau." });
   }
 };

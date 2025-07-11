@@ -2,13 +2,13 @@ import React, { useContext } from "react";
 import TaskContext from "../context/TaskContext";
 import axios from "../Axios/axios";
 
-function CompletedTask({ task, index }) {
+function CompletedTask({ task }) {
   const { dispatch } = useContext(TaskContext);
 
   const handleToggleComplete = async () => {
     try {
       await axios.patch(`/task/markDone/${task._id}`);
-      dispatch({ type: "MARK_DONE", id: index });
+      dispatch({ type: "MARK_DONE", id: task._id });
     } catch (error) {
       console.error("Lỗi khi cập nhật trạng thái:", error);
     }
@@ -17,7 +17,7 @@ function CompletedTask({ task, index }) {
   const handleDelete = async () => {
     try {
       await axios.delete(`/task/delete/${task._id}`);
-      dispatch({ type: "REMOVE_TASK", id: index });
+      dispatch({ type: "REMOVE_TASK", id: task._id });
     } catch (error) {
       console.error("Lỗi khi xóa task:", error);
     }
