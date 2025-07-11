@@ -1,86 +1,88 @@
-import React, { useState } from 'react';
-import { useContext } from 'react';
-import TaskContext from '../../context/TaskContext';
-import TokenContext from '../../context/TokenContext';
-import axios from "../../Axios/axios.js"
-import "./createTask.css"
+import React, { useContext, useState } from "react";
+import TaskContext from "../../context/TaskContext";
+import TokenContext from "../../context/TokenContext";
+import axios from "../../Axios/axios";
+import "./createTask.css";
+
 function CreateTask() {
-    const { dispatch } = useContext(TaskContext)
-    const {userToken} = useContext(TokenContext)
-    const [title, setTitle] = useState("")
-    const [description, setDescription] = useState("")
-    // const [toast, setToast] = useState();
-    const handleAdd = async (e) => {
-        e.preventDefault();
-        try {
-            const res = await axios.post("/task/addTask", {title, description},{
-              headers: {
-                Authorization: `Bearer ${userToken}`
-              }
-            })
-            //setToast(res.data)
-            // showToast();
-          } catch (error) {
-            console.log(error);
-          }
-        dispatch({
-            type: "ADD_TASK",
-            title,
-            description
-        })
-        setTitle("")
-        setDescription("")
+  const { dispatch } = useContext(TaskContext);
+  const { userToken } = useContext(TokenContext);
+
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+  });
+
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.title.trim()) {
+      return setError("Tiêu đề không được để trống");
     }
 
-    // const showToast = () => {
-    //     const toast = document.getElementById('toast');
-    //     toast.style.display = "block"
-    //     setTimeout(hideToast,2000)
-    // }
-    // const hideToast = () => {
-    //     const toast = document.getElementById('toast');
-    //     toast.style.display = "none"
-    // }
-    return (
-        <div className="addContainer md:w-1/3 md:mx-auto mx-3 mt-3 flex justify-center">
-            <div className='w-11/12'>
-                <form onSubmit={handleAdd}>
-                    <div>
-                        <label htmlFor="title">Title</label>
-                        <input
-                            type="text"
-                            name="title"
-                            id="title"
-                            value={title}
-                            required
-                            onChange={(e) => setTitle(e.target.value)}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
-                    </div>
-                    <div className='my-3'>
-                        <label htmlFor="description">Description</label>
-                        <textarea
-                            rows={5}
-                            name="description"
-                            id="description"
-                            value={description}
-                            required
-                            onChange={(e) => setDescription(e.target.value)}
-                            style={{ resize: "none" }}
-                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' />
-                    </div>
-                    <div className='flex justify-center'>
-                        <button
-                            type='submit'
-                            className=' bg-blue-700 rounded-md text-white px-5 py-1 '
-                        >Add</button>
-                    </div>
-                </form>
-                <div className="toast bg-green-600 text-white p-3 rounded-xl shadow-2xl text-center absolute bottom-4 left-1/2 -translate-x-1/2" id='toast'>
-                    <p>This is test</p>
-                </div>
-            </div>
-        </div>
-    );
+    try {
+      const res = await axios.post("/task/create", formData, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
+      dispatch({ type: "ADD_TASK", title: res.data.title, description: res.data.description });
+      setFormData({ title: "", description: "" });
+      setError("");
+    } catch (err) {
+      console.error("Create Task Error:", err);
+      setError("Tạo task thất bại. Vui lòng thử lại.");
+    }
+  };
+
+  return (
+    <div className="create-task-container">
+      <form onSubmit={handleSubmit} className="create-task-form">
+        <h2 className="text-xl font-bold mb-2">Tạo công việc mới</h2>
+
+        {error && (
+          <div className="text-red-600 font-medium mb-2">
+            {error}
+          </div>
+        )}
+
+        <input
+          type="text"
+          name="title"
+          value={formData.title}
+          placeholder="Tiêu đề"
+          onChange={handleChange}
+          className="input-field"
+        />
+
+        <textarea
+          name="description"
+          value={formData.description}
+          placeholder="Mô tả (không bắt buộc)"
+          onChange={handleChange}
+          className="input-field"
+        />
+
+        <button
+          type="submit"
+          className="submit-button"
+        >
+          Thêm task
+        </button>
+      </form>
+    </div>
+  );
 }
 
 export default CreateTask;
