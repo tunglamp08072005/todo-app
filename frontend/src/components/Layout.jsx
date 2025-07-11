@@ -1,24 +1,17 @@
-import React from 'react';
-import TaskIndicator from './TaskIndicator';
-import CreateTask from './createTask/CreateTask';
-import { Outlet } from 'react-router-dom';
-function Layout() {
-    return (
-        <div>
-            <div className='flex flex-col md:flex-row md:justify-between'>
-                <CreateTask />
-                <div className='task-container w-auto mx-5 md:w-1/3 mt-3'>
-                    <div className='outlet'>
-                        <Outlet />
-                    </div>
-                    <div className='indicator'>
-                        <TaskIndicator />
-                    </div>
+import React from "react";
+import CreateTask from "./createTask/CreateTask";
+import TaskIndicator from "./TaskIndicator";
+import { Outlet } from "react-router-dom";
 
-                </div>
-            </div>
-        </div>
-    );
+function Layout() {
+  return (
+    <div className="layout-container max-w-3xl mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">Quản lý công việc</h1>
+      <CreateTask />
+      <TaskIndicator />
+      <Outlet />
+    </div>
+  );
 }
 
 export default Layout;
