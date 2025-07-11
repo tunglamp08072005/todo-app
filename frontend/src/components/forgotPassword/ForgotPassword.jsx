@@ -1,59 +1,73 @@
-import React, { useState } from 'react';
-import axios from "../../Axios/axios.js";
+import React, { useState } from "react";
+import axios from "../../Axios/axios";
 
 function ForgotPassword() {
-    const [email, setEmail] = useState("");
-    const [message, setMessage] = useState("");
-    const [error, setError] = useState("");
-    const [isLoading, setIsLoading] = useState(false)
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            setIsLoading(true)
-            setMessage("");
-            setError("");
-            const res = await axios.post("/forgotPassword/forgotPassword", {email})
-            console.log(res);
-            setMessage(res.data.message);
-            console.log(res.data.message);
-        } catch (error) {
-            setError(error.response.data.message)
-            console.log(error);
-            console.log(error.response.data.message);
-        }finally{
-            setIsLoading(false)
-        }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!email.trim()) {
+      setError("Vui lòng nhập địa chỉ email.");
+      return;
     }
-    return (
-        <div className="text-center">
-            <h1 className="text-xl font-bold p-5">Forgot Password</h1>
-            <form className="w-2/5 mx-auto p-5" onSubmit={handleSubmit}>
-                <input type="email"
-                    className="p-3 rounded-md shadow-lg w-full"
-                    placeholder="Enter your email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                    required
-                />
-                <button className="p-2 rounded-md shadow-md bg-indigo-700 text-white px-5 mt-10 disabled:bg-indigo-500" disabled={isLoading}>Reset</button>
-            </form>
-            {
-                message && <div className='mt-10 bg-green-700 mx-auto w-2/5 p-3 rounded-lg shadow-lg text-white text-lg'>
-                    <p>
-                        {message}
-                    </p>
-                </div>
-            }
-            {
-                error && <div className='mt-10 bg-red-700 mx-auto w-2/5 p-3 rounded-lg shadow-lg text-white text-lg'>
-                    <p>
-                        {error}
-                    </p>
-                </div>
-            }
-        </div>
-    );
+
+    try {
+      const res = await axios.post("/forgotPassword/forgot", { email });
+      setMessage(res.data.message);
+      setError("");
+      setEmail("");
+    } catch (err) {
+      console.error("Forgot Password Error:", err);
+      setError(
+        err.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại."
+      );
+      setMessage("");
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-slate-100">
+      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-center mb-4">Quên mật khẩu</h2>
+
+        {message && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded mb-4">
+            {message}
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="email" className="block mb-2 font-medium text-gray-700">
+            Nhập địa chỉ email của bạn:
+          </label>
+          <input
+            type="email"
+            id="email"
+            className="w-full px-3 py-2 border border-gray-300 rounded mb-4 focus:outline-none focus:border-blue-500"
+            placeholder="example@gmail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded font-medium transition"
+          >
+            Gửi yêu cầu đặt lại mật khẩu
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }
 
 export default ForgotPassword;
