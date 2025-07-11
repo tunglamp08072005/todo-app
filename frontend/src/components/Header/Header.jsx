@@ -1,46 +1,47 @@
-import React from 'react';
-import { useContext } from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
-import TokenContext from '../../context/TokenContext.js';
-import "./header.css"
-function Header() {
-    const token = localStorage.getItem("authToken");
-    const { user } = useContext(TokenContext);
-    console.log("user", user);
-    const logout = () => {
-        localStorage.removeItem("authToken");
-        window.location.href = "/login";
-    }
+import React, { useContext } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import TokenContext from "../../context/TokenContext";
+import "./Header.css";
 
-    return (
-        <div>
-            <nav className='header bg-slate-200 flex justify-between items-center'>
-                <div className="logo w-1/4 text-center">
-                    <NavLink to="/">Todo App</NavLink>
-                </div>
-                <div className='flex justify-between'>
-                    {
-                        token ? (
-                            <div className='flex items-center justify-center'>
-                                <p className='mr-5'>welcome, <span className=' text-xl text-blue-800 capitalize'>{user.name}</span></p>
-                                <button onClick={logout} className="logout mr-4">Logout</button>
-                            </div>
-                        ) : (
-                            <ul className='flex justify-end gap-3 w-3/4 pr-6'>
-                                <li>
-                                    <NavLink to="/login">Login</NavLink>
-                                </li>
-                                <li>
-                                    <NavLink to="/register">Register</NavLink>
-                                </li>
-                            </ul>
-                        )
-                    }
-                </div>
-            </nav>
-            <Outlet />
+function Header() {
+  const { userToken, tokenDispatch, userDispatch, user } = useContext(TokenContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    tokenDispatch({ type: "UNSET_TOKEN" });
+    userDispatch({ type: "UNSET_USER" });
+    navigate("/login");
+  };
+
+  return (
+    <>
+      <header className="header">
+        <div className="header__left">
+          <h1 className="logo">Todo App</h1>
         </div>
-    );
+        <nav className="header__right">
+          {userToken ? (
+            <>
+              <span className="welcome">Xin chào, {user.name}</span>
+              <button className="logout-btn" onClick={handleLogout}>
+                Đăng xuất
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className="header__link">Đăng nhập</NavLink>
+              <NavLink to="/register" className="header__link">Đăng ký</NavLink>
+            </>
+          )}
+        </nav>
+      </header>
+
+      <main className="main">
+        <Outlet />
+      </main>
+    </>
+  );
 }
 
 export default Header;
