@@ -1,38 +1,49 @@
-# Installation
-Run the following command to clone the repository
-```
+# 📋 MERN Todo App
+
+Ứng dụng Todo hiện đại được xây dựng bằng MERN Stack (MongoDB, Express, React, Node.js) — hỗ trợ đăng nhập, quản lý tác vụ, và chức năng quên mật khẩu qua email.
+
+---
+
+## 🚀 Cài đặt
+
+### 1. Sao chép repository về máy:
+```bash
 git clone https://github.com/alokyadav1/mern-todo-app.git
 ```
-Go to ```frontend``` and ```backend``` directory to install packages
+
+### 2. Cài đặt cho frontend
 ```
+# Cài đặt cho frontend
 cd frontend
 npm install
 ```
-```
-cd backend
-npm install
-```
-# Configuration
-Create ```.env``` file inside ```backend``` directory and copy the following code
 
 ```
-MONGO_URI=Your mongodb URI
-GMAIL_USERNAME=your gmail address 
-GMAIL_PASSWORD=password created inside 'App Password' section under google accounts setting
-PORT=8000
-JWT_SECRET=a random secret key eg. thisisasecretkey
+# Cài đặt cho backend
+cd ../backend
+npm install
 ```
-# Run the App
-Go to ```backend``` and ```frontend``` directory and start the server
+
+## ⚙️ Cấu hình môi trường
+Tạo file .env trong thư mục backend/ với nội dung mẫu sau:
 ```
+MONGO_URI=<URL kết nối MongoDB của bạn>
+EMAIL_USER=<Địa chỉ Gmail của bạn>
+EMAIL_PASSWORD=<Mật khẩu ứng dụng tạo trong Google>
+PORT=5000
+JWT_SECRET=thisisasecretkey
+RESET_SECRET=anothersecretkey
+FRONTEND_URL=http://localhost:3000
+```
+
+## ▶️ Khởi chạy ứng dụng
+Chạy server và frontend ở hai terminal riêng:
+```
+# Khởi chạy backend
 cd backend
-nodemon server
-```
-```
+nodemon server.js
+
+# Khởi chạy frontend
 cd frontend
 npm start
 ```
-# Live Preview
-Check live preview here [https://todo-app-b96a5.web.app/](https://todo-app-b96a5.web.app/)
-
-
