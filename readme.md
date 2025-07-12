@@ -8,7 +8,7 @@
 
 ### 1. Sao chép repository về máy:
 ```bash
-git clone https://github.com/alokyadav1/mern-todo-app.git
+git clone https://github.com/tunglamp08072005/todo-app.git
 ```
 
 ### 2. Cài đặt cho frontend
