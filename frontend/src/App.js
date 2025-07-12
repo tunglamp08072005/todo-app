@@ -3,7 +3,6 @@ import { useEffect, useReducer } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Header from './components/Header/Header';
-import AllTask from './components/AllTask';
 import Active from './components/Active';
 import Completed from './components/Completed';
 import Layout from './components/Layout';
