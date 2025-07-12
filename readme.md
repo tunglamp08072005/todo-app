@@ -47,3 +47,6 @@ nodemon server.js
 cd frontend
 npm start
 ```
+
+Hình ảnh của ứng dụng:
+<img width="2879" height="1619" alt="image" src="https://github.com/user-attachments/assets/88ab1c35-3284-4b2e-bfcd-c03cd7173564" />
