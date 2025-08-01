@@ -20,7 +20,7 @@ npm install
 
 ```
 # Cài đặt cho backend
-cd ../backend
+cd backend
 npm install
 ```
 
@@ -37,7 +37,7 @@ FRONTEND_URL=http://localhost:3000
 ```
 
 ## ▶️ Khởi chạy ứng dụng
-Chạy server và frontend ở hai terminal riêng:
+Chạy backend và frontend ở hai terminal riêng:
 ```
 # Khởi chạy backend
 cd backend
@@ -49,4 +49,5 @@ npm start
 ```
 
 ## Hình ảnh của ứng dụng:
-<img width="2879" height="1619" alt="image" src="https://github.com/user-attachments/assets/88ab1c35-3284-4b2e-bfcd-c03cd7173564" />
+<img width="2879" height="1619" alt="image" src="https://github.com/user-attachments/assets/94b2042b-5abd-4b0c-a8fb-127c82cd4da4" />
+
