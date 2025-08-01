@@ -4,7 +4,8 @@ const {
   createTask,
   getTasks,
   deleteTask,
-  toggleComplete
+  toggleComplete,
+  updateTask,
 } = require("../controllers/taskController");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -22,5 +23,8 @@ router.delete("/delete/:id", deleteTask);
 
 // ✅ Đánh dấu task hoàn thành hoặc bỏ hoàn thành
 router.patch("/markDone/:id", toggleComplete);
+
+// ✅ Cập nhật task
+router.patch("/update/:id", updateTask);
 
 module.exports = router;

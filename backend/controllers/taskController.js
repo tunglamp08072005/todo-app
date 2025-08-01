@@ -92,3 +92,29 @@ exports.toggleComplete = async (req, res) => {
     res.status(500).json({ message: "Cập nhật task thất bại" });
   }
 };
+
+/**
+ * @desc Cập nhật task theo ID
+ * @route PATCH /task/update/:id
+ * @access Private
+ */
+exports.updateTask = async (req, res) => {
+  try {
+    const { title, description } = req.body;
+
+    const task = await Task.findOneAndUpdate(
+      { _id: req.params.id, user: req.user.id },
+      { title, description },
+      { new: true } // trả về task đã cập nhật
+    );
+
+    if (!task) {
+      return res.status(404).json({ message: "Không tìm thấy task để cập nhật" });
+    }
+
+    res.status(200).json(task);
+  } catch (error) {
+    console.error("Update Task Error:", error);
+    res.status(500).json({ message: "Cập nhật task thất bại" });
+  }
+};
